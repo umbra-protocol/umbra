@@ -20,7 +20,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// PaymentCircuit defines the constraint system for payment proofs with REAL EdDSA verification
+// PaymentCircuit defines the constraint system for payment proofs
 type PaymentCircuit struct {
 	// Public inputs
 	MinAmount     frontend.Variable `gnark:",public"`
@@ -41,23 +41,20 @@ type PaymentCircuit struct {
 	SignatureS    frontend.Variable
 }
 
-// Define declares the circuit constraints with REAL CRYPTOGRAPHY
+// Define declares the circuit constraints
 func (circuit *PaymentCircuit) Define(api frontend.API) error {
-	// Constraint 1: actualAmount >= minAmount
+	// Amount check
 	api.AssertIsLessOrEqual(circuit.MinAmount, circuit.ActualAmount)
 
-	// Constraint 2: payment is recent (currentTime - paymentTime <= maxBlockAge)
+	// Time check
 	timeDiff := api.Sub(circuit.CurrentTime, circuit.PaymentTime)
 	api.AssertIsLessOrEqual(timeDiff, circuit.MaxBlockAge)
 
-	// Constraint 3: Hash payment details with MiMC (ZK-friendly hash)
-	// MiMC is available in gnark, Poseidon would require additional implementation
+	// Hash payment details
 	mimc, err := mimc.NewMiMC(api)
 	if err != nil {
 		return fmt.Errorf("failed to initialize MiMC: %w", err)
 	}
-
-	// Hash: MiMC(actualAmount || senderKeyX || senderKeyY || recipientKeyX || recipientKeyY || paymentTime)
 	mimc.Write(circuit.ActualAmount)
 	mimc.Write(circuit.SenderKeyX)
 	mimc.Write(circuit.SenderKeyY)
@@ -66,13 +63,11 @@ func (circuit *PaymentCircuit) Define(api frontend.API) error {
 	mimc.Write(circuit.PaymentTime)
 	messageHash := mimc.Sum()
 
-	// Constraint 4: REAL EdDSA signature verification
+	// EdDSA signature verification
 	curve, err := twistededwards.NewEdCurve(api, twistededwards.BN254)
 	if err != nil {
 		return fmt.Errorf("failed to initialize edwards curve: %w", err)
 	}
-
-	// Construct the public key point
 	publicKey := eddsa.PublicKey{
 		A: eddsa.Point{
 			X: circuit.SenderKeyX,
@@ -81,7 +76,6 @@ func (circuit *PaymentCircuit) Define(api frontend.API) error {
 		Curve: curve,
 	}
 
-	// Construct the signature
 	signature := eddsa.Signature{
 		R: eddsa.Point{
 			X: circuit.SignatureR8X,
@@ -90,7 +84,6 @@ func (circuit *PaymentCircuit) Define(api frontend.API) error {
 		S: circuit.SignatureS,
 	}
 
-	// REAL EdDSA VERIFICATION - This actually checks the signature!
 	err = eddsa.Verify(api, signature, messageHash, publicKey)
 	if err != nil {
 		return fmt.Errorf("EdDSA verification constraint failed: %w", err)
@@ -135,23 +128,20 @@ var (
 )
 
 func main() {
-	log.Println("Starting x402 ZK Prover Service with REAL EdDSA verification...")
+	log.Println("Starting Umbra Protocol prover service...")
 
-	// Initialize circuit and generate keys
-	log.Println("Compiling circuit with EdDSA constraints...")
+	log.Println("Compiling circuit...")
 	if err := initializeCircuit(); err != nil {
 		log.Fatalf("Failed to initialize circuit: %v", err)
 	}
 
-	log.Println("✓ Circuit compiled successfully with REAL cryptography")
+	log.Println("Circuit compiled successfully")
 
-	// Initialize rate limiter (10 requests per minute per IP)
 	rateLimiter = NewRateLimiter(10, time.Minute)
-	log.Println("✓ Rate limiter initialized (10 req/min per IP)")
+	log.Println("Rate limiter initialized")
 
-	// Initialize proof cache (1000 proofs, 1 hour TTL)
 	proofCache = NewProofCache(1000, time.Hour)
-	log.Println("✓ Proof cache initialized (1000 proofs, 1h TTL)")
+	log.Println("Proof cache initialized")
 
 	log.Println("Prover service ready on :8080")
 
@@ -174,16 +164,14 @@ func main() {
 }
 
 func initializeCircuit() error {
-	// Compile the circuit with REAL EdDSA verification
 	var circuit PaymentCircuit
 	ccs, err := frontend.Compile(ecc.BN254.ScalarField(), r1cs.NewBuilder, &circuit)
 	if err != nil {
 		return fmt.Errorf("circuit compilation failed: %w", err)
 	}
 
-	log.Printf("Circuit constraints: %d (includes EdDSA verification)", ccs.GetNbConstraints())
+	log.Printf("Circuit constraints: %d", ccs.GetNbConstraints())
 
-	// Setup (in production, use trusted setup ceremony)
 	pk, vk, err := groth16.Setup(ccs)
 	if err != nil {
 		return fmt.Errorf("setup failed: %w", err)
@@ -191,10 +179,6 @@ func initializeCircuit() error {
 
 	provingKey = pk
 	verifyingKey = vk
-
-	log.Println("✓ Proving key generated")
-	log.Println("✓ Verification key generated")
-	log.Println("✓ EdDSA verification enabled in circuit")
 
 	return nil
 }
@@ -242,13 +226,12 @@ func generateProofHandler(c *gin.Context) {
 		return
 	}
 
-	log.Printf("Generating proof with EdDSA verification for %s", c.ClientIP())
+	log.Printf("Generating proof for %s", c.ClientIP())
 
-	// Pre-verify the EdDSA signature before generating proof
 	if err := preVerifySignature(&req); err != nil {
-		log.Printf("EdDSA pre-verification failed: %v", err)
+		log.Printf("Signature verification failed: %v", err)
 		proofGenerationErrors.Inc()
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid EdDSA signature: %v", err)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid signature: %v", err)})
 		return
 	}
 
@@ -277,7 +260,6 @@ func generateProofHandler(c *gin.Context) {
 		return
 	}
 
-	// Generate proof with EdDSA verification
 	proofStart := time.Now()
 	proof, err := groth16.Prove(ccs, provingKey, witness)
 	if err != nil {
@@ -308,7 +290,7 @@ func generateProofHandler(c *gin.Context) {
 	proofVerificationDuration.Observe(time.Since(verifyStart).Seconds())
 
 	generationTime := time.Since(startTime).Milliseconds()
-	log.Printf("✓ Proof with EdDSA verification generated in %dms", generationTime)
+	log.Printf("Proof generated in %dms", generationTime)
 
 	proofGenerationTotal.Inc()
 
@@ -340,15 +322,12 @@ func generateProofHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// preVerifySignature verifies the EdDSA signature before proof generation
 func preVerifySignature(req *ProofRequest) error {
-	// Parse the public key
 	senderX := new(big.Int)
 	senderY := new(big.Int)
 	senderX.SetString(req.SenderKeyX, 10)
 	senderY.SetString(req.SenderKeyY, 10)
 
-	// Parse signature components
 	r8x := new(big.Int)
 	r8y := new(big.Int)
 	s := new(big.Int)
@@ -356,10 +335,7 @@ func preVerifySignature(req *ProofRequest) error {
 	r8y.SetString(req.SignatureR8Y, 10)
 	s.SetString(req.SignatureS, 10)
 
-	// Create the message hash (same as in circuit)
 	hFunc := hash.MIMC_BN254.New()
-
-	// Hash: MiMC(actualAmount || senderKeyX || senderKeyY || recipientKeyX || recipientKeyY || paymentTime)
 	actualAmount := new(big.Int)
 	actualAmount.SetString(req.ActualAmount, 10)
 	recipientX := new(big.Int)
@@ -377,7 +353,6 @@ func preVerifySignature(req *ProofRequest) error {
 
 	messageHash := hFunc.Sum(nil)
 
-	// Verify EdDSA signature using gnark-crypto
 	var pubKey eddsa.PublicKey
 	pubKey.A.X.SetBigInt(senderX)
 	pubKey.A.Y.SetBigInt(senderY)
@@ -387,7 +362,6 @@ func preVerifySignature(req *ProofRequest) error {
 	sig.R.Y.SetBigInt(r8y)
 	sig.S.SetBytes(s.Bytes())
 
-	// REAL EdDSA verification
 	isValid, err := pubKey.Verify(sig.Bytes(), messageHash, hash.MIMC_BN254.New())
 	if err != nil {
 		return fmt.Errorf("signature verification error: %w", err)
@@ -497,9 +471,7 @@ func isValidNumeric(s string) bool {
 func healthHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "healthy",
-		"service": "x402-zk-prover",
+		"service": "umbra-prover",
 		"version": "1.0.0",
-		"crypto":  "REAL EdDSA verification enabled",
-		"rateLimit": "10 requests/minute per IP",
 	})
 }
