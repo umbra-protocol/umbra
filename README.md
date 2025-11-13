@@ -1,6 +1,6 @@
-# x402 ZK Payment System for Solana
+# Umbra Protocol
 
-A zero-knowledge proof system for privacy-preserving payment verification on Solana using Groth16 ZK-SNARKs.
+Privacy layer for Solana payments using zero-knowledge proofs.
 
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 ![Coverage](https://img.shields.io/badge/coverage-85--90%25-green.svg)
@@ -10,9 +10,9 @@ A zero-knowledge proof system for privacy-preserving payment verification on Sol
 
 ## What This Is
 
-**A complete, working zero-knowledge proof system for Solana.**
+**Umbra Protocol is a complete, working zero-knowledge proof system for Solana.**
 
-This is a **framework/SDK** that developers can integrate into their projects to add privacy-preserving payment verification. It provides:
+A **framework/SDK** that developers can integrate into their projects to add privacy-preserving payment verification. It provides:
 
 1. **Backend Service** - Go-based prover that generates ZK proofs (80-120ms)
 2. **On-Chain Verifier** - Solana program that verifies proofs (4ms)
@@ -69,8 +69,8 @@ circom >= 2.1.0
 
 ```bash
 # Clone and install
-git clone https://github.com/veil-protocol/veil.git
-cd veil
+git clone https://github.com/umbra-protocol/umbra.git
+cd umbra
 
 cd circuits && npm install && cd ..
 cd sdk && npm install && cd ..
