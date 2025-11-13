@@ -69,8 +69,8 @@ circom >= 2.1.0
 
 ```bash
 # Clone and install
-git clone [your-repo-url]
-cd x402-zk-payments
+git clone https://github.com/veil-protocol/veil.git
+cd veil
 
 cd circuits && npm install && cd ..
 cd sdk && npm install && cd ..
