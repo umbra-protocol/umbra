@@ -1,0 +1,18 @@
+{
+  "name": "x402-zk-payments-testing",
+  "version": "1.0.0",
+  "description": "Comprehensive testing suite for x402 ZK payment system",
+  "scripts": {
+    "test:load": "node load_test.js",
+    "test:stress": "node stress_test.js",
+    "test:fuzz": "node fuzz_test.js",
+    "test:chaos": "node chaos_test.js",
+    "test:all": "node run_all_tests.js",
+    "test:quick": "CONCURRENT_USERS=10 REQUESTS_PER_USER=20 node load_test.js",
+    "validate:production": "node run_all_tests.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {}
+}

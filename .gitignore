@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+target/
+*.wasm
+*.r1cs
+*.sym
+*.zkey
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rust
+Cargo.lock
+**/*.rs.bk
+
+# Go
+go.sum
+
+# Testing
+coverage/
+
+# Keys (NEVER commit these!)
+*.key
+*.pem
+id.json

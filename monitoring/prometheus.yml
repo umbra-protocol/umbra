@@ -1,0 +1,51 @@
+# Prometheus configuration for x402 ZK Payment system
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'x402-zk-payments'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "alerts.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prover service metrics
+  - job_name: 'prover'
+    static_configs:
+      - targets: ['prover:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # x402 server metrics
+  - job_name: 'x402-server'
+    static_configs:
+      - targets: ['server:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Node exporter (system metrics)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # Solana RPC monitoring
+  - job_name: 'solana'
+    static_configs:
+      - targets: ['solana-exporter:9999']
+    scrape_interval: 30s
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

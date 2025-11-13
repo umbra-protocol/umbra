@@ -1,0 +1,40 @@
+{
+  "name": "x402-zk-payments",
+  "version": "0.1.0",
+  "description": "Zero-knowledge proof system for private x402 payment verification on Solana",
+  "private": true,
+  "workspaces": [
+    "circuits",
+    "sdk",
+    "server"
+  ],
+  "scripts": {
+    "setup": "npm install && cd circuits && npm install && cd ../sdk && npm install && cd ../server && npm install",
+    "build:circuits": "cd circuits && npm run compile",
+    "build:contracts": "cd contracts && cargo build-bpf",
+    "build:sdk": "cd sdk && npm run build",
+    "build:server": "cd server && npm run build",
+    "build": "npm run build:circuits && npm run build:sdk && npm run build:server",
+    "start:prover": "cd prover && go run main.go",
+    "start:server": "cd server && npm run dev",
+    "test:circuits": "cd circuits && npm test",
+    "test:contracts": "cd contracts && cargo test",
+    "test:sdk": "cd sdk && npm test",
+    "clean": "rm -rf */dist */build */node_modules"
+  },
+  "keywords": [
+    "x402",
+    "zero-knowledge",
+    "zk-snark",
+    "groth16",
+    "payments",
+    "solana",
+    "privacy",
+    "cryptography"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,125 @@
+groups:
+  - name: x402_alerts
+    interval: 30s
+    rules:
+      # Prover service alerts
+      - alert: ProverServiceDown
+        expr: up{job="prover"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prover service is down"
+          description: "Prover service has been down for more than 1 minute"
+
+      - alert: HighProofGenerationTime
+        expr: proof_generation_duration_seconds > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Proof generation is slow"
+          description: "Proof generation taking longer than 500ms"
+
+      - alert: ProverHighErrorRate
+        expr: rate(proof_generation_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High proof generation error rate"
+          description: "More than 10% of proofs failing"
+
+      - alert: ProverMemoryHigh
+        expr: process_resident_memory_bytes{job="prover"} > 2e9
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prover memory usage high"
+          description: "Prover using more than 2GB memory"
+
+      # Server alerts
+      - alert: ServerDown
+        expr: up{job="x402-server"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "x402 server is down"
+          description: "Server has been down for more than 1 minute"
+
+      - alert: HighVerificationFailureRate
+        expr: rate(verification_failures_total[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High verification failure rate"
+          description: "More than 50% of verifications failing"
+
+      - alert: ServerHighLatency
+        expr: http_request_duration_seconds{quantile="0.95"} > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Server latency high"
+          description: "95th percentile latency over 1 second"
+
+      # Rate limiting alerts
+      - alert: HighRateLimitHitRate
+        expr: rate(rate_limit_exceeded_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "High rate limit violations"
+          description: "More than 10 rate limit hits per second"
+
+      # System alerts
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage over 90% for 10 minutes"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage over 90%"
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space low"
+          description: "Less than 10% disk space remaining"
+
+      # Solana alerts
+      - alert: SolanaRPCUnreachable
+        expr: solana_rpc_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Solana RPC unreachable"
+          description: "Cannot connect to Solana RPC"
+
+      - alert: HighSolanaLatency
+        expr: solana_rpc_latency_seconds > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Solana RPC latency"
+          description: "Solana RPC latency over 5 seconds"
