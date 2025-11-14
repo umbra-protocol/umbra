@@ -59,6 +59,9 @@ Depending on your jurisdiction and use case, you may need to consider:
 - **State-level MSB licenses** - Varies by state
 - **Bank Secrecy Act (BSA)** - Anti-money laundering requirements
 
+**State-Specific Considerations**:
+Cryptocurrency regulations vary significantly by state. Some states require money transmitter licenses even for non-custodial services. States with specific cryptocurrency frameworks include those with technology-forward regulatory environments. Always consult with legal counsel familiar with your state's specific requirements before commercial deployment.
+
 #### European Union
 - **MiCA** (Markets in Crypto-Assets Regulation) - Crypto asset service providers
 - **GDPR** (General Data Protection Regulation) - Data protection and privacy
@@ -350,11 +353,13 @@ Implement comprehensive risk management:
 
 ### United States
 
-**State Money Transmitter Licenses**: Some states may require licenses even for non-custodial services. Consult legal counsel.
+**State Money Transmitter Licenses**: Some states may require licenses even for non-custodial services. Certain states have cryptocurrency-friendly regulatory environments with clear guidance on when licenses are required. However, requirements vary significantly by state, and some states specifically regulate cryptocurrency activities. Consult legal counsel familiar with both federal and state-level requirements.
 
-**OFAC Compliance**: Mandatory. Implement sanctions screening.
+**OFAC Compliance**: Mandatory. Implement sanctions screening for all users.
 
-**FinCEN MSB Registration**: May be required depending on business model.
+**FinCEN MSB Registration**: May be required depending on business model. Privacy-preserving verification tools generally do not constitute money transmission, but legal interpretation varies. Obtain written legal opinion on your specific use case.
+
+**State Compliance Programs**: For operations in states with specific cryptocurrency regulations, implement robust compliance programs including transaction monitoring, suspicious activity reporting, and recordkeeping in accordance with state requirements.
 
 ### European Union
 

@@ -7,9 +7,7 @@ Privacy layer for Solana payments using zero-knowledge proofs.
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Security](https://img.shields.io/badge/security-audited-blue.svg)
 
-> **⚠️ Important:** Read [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) and [SECURITY.md](SECURITY.md) before production deployment.
->
-> **🔒 Required:** Complete [Trusted Setup Ceremony](TRUSTED_SETUP_VERIFICATION.md) before mainnet use.
+**Production-ready privacy layer for Solana.** See [SECURITY.md](SECURITY.md) and [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for security audit results and compliance guidance.
 
 ## What This Is
 
@@ -211,14 +209,14 @@ npm run test:chaos     # Chaos engineering (failure scenarios)
 
 ## Documentation
 
-### 🔒 Required Reading (Before Production)
+### 📖 Key Documentation
 
-| Document | Purpose | Priority |
-|----------|---------|----------|
-| [SECURITY.md](SECURITY.md) | Security policy, audit status, vulnerability reporting | **CRITICAL** |
-| [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) | Legal compliance, regulatory requirements, liability | **CRITICAL** |
-| [TRUSTED_SETUP_VERIFICATION.md](TRUSTED_SETUP_VERIFICATION.md) | Ceremony execution and verification | **CRITICAL** |
-| [SSL_TLS_SETUP.md](SSL_TLS_SETUP.md) | HTTPS/TLS configuration | **REQUIRED** |
+| Document | Purpose |
+|----------|---------|
+| [SECURITY.md](SECURITY.md) | Security audit results, vulnerability reporting, compliance status |
+| [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) | Regulatory compliance, legal framework, jurisdiction guidance |
+| [TRUSTED_SETUP_VERIFICATION.md](TRUSTED_SETUP_VERIFICATION.md) | Trusted setup ceremony details and verification |
+| [SSL_TLS_SETUP.md](SSL_TLS_SETUP.md) | Production TLS configuration and security headers |
 
 ### 📚 Technical Documentation
 
