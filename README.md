@@ -5,8 +5,11 @@ Privacy layer for Solana payments using zero-knowledge proofs.
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 ![Coverage](https://img.shields.io/badge/coverage-85--90%25-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Security](https://img.shields.io/badge/security-audited-blue.svg)
 
-> **Note:** This is an independent developer project. Use at your own discretion.
+> **⚠️ Important:** Read [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) and [SECURITY.md](SECURITY.md) before production deployment.
+>
+> **🔒 Required:** Complete [Trusted Setup Ceremony](TRUSTED_SETUP_VERIFICATION.md) before mainnet use.
 
 ## What This Is
 
@@ -208,13 +211,24 @@ npm run test:chaos     # Chaos engineering (failure scenarios)
 
 ## Documentation
 
+### 🔒 Required Reading (Before Production)
+
+| Document | Purpose | Priority |
+|----------|---------|----------|
+| [SECURITY.md](SECURITY.md) | Security policy, audit status, vulnerability reporting | **CRITICAL** |
+| [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) | Legal compliance, regulatory requirements, liability | **CRITICAL** |
+| [TRUSTED_SETUP_VERIFICATION.md](TRUSTED_SETUP_VERIFICATION.md) | Ceremony execution and verification | **CRITICAL** |
+| [SSL_TLS_SETUP.md](SSL_TLS_SETUP.md) | HTTPS/TLS configuration | **REQUIRED** |
+
+### 📚 Technical Documentation
+
 | Document | Purpose |
 |----------|---------|
-| [COMPLETE_SYSTEM_OVERVIEW.md](COMPLETE_SYSTEM_OVERVIEW.md) | System architecture |
-| [PRODUCTION_DEPLOYMENT_CHECKLIST.md](PRODUCTION_DEPLOYMENT_CHECKLIST.md) | Deployment guide |
-| [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md) | Operations runbook |
-| [SSL_TLS_SETUP.md](SSL_TLS_SETUP.md) | SSL configuration |
-| [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Command reference |
+| [COMPLETE_SYSTEM_OVERVIEW.md](COMPLETE_SYSTEM_OVERVIEW.md) | System architecture and implementation details |
+| [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) | Step-by-step build and setup guide |
+| [PRODUCTION_DEPLOYMENT_CHECKLIST.md](PRODUCTION_DEPLOYMENT_CHECKLIST.md) | Pre-deployment verification checklist |
+| [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md) | Operations runbook and troubleshooting |
+| [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Command reference and common tasks |
 
 ---
 
