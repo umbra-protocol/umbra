@@ -370,3 +370,4 @@ MIT License - See [LICENSE](LICENSE) file
 ---
 
 **Built for Solana's x402 payment protocol**
+
